@@ -86,7 +86,10 @@ def view_calendar(context, request):
 
     session = DBSession()
     now = datetime.datetime.now()
-    query = session.query(Event).filter(Event.parent_id == context.id)
+    query = session.query(Event).filter(
+        or_(Event.other_calendars.any(Calendar.id == context.id),
+            Event.parent_id == context.id)
+    )
     future = or_(Event.start > now, Event.end > now)
     upcoming = query.filter(future).order_by(Event.start).all()
     past = query.filter(Event.start < now).order_by(desc(Event.start)).all()

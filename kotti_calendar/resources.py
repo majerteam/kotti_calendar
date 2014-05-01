@@ -3,13 +3,25 @@ from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
+from sqlalchemy import Table
+from sqlalchemy.orm import relationship
 from zope.interface import implements
 
 from kotti.interfaces import IDefaultWorkflow
 from kotti.resources import Content
 from kotti.resources import Document
 from kotti.sqla import JsonType
+from kotti import Base
+
 from kotti_calendar import _
+
+
+other_calendars_association_table = Table(
+    'other_calendars_assocation',
+    Base.metadata,
+    Column('calendar_id', Integer, ForeignKey('calendars.id')),
+    Column('event_id', Integer, ForeignKey('events.id')),
+)
 
 
 class Calendar(Content):
@@ -38,6 +50,11 @@ class Event(Document):
     end = Column('end', DateTime())
     all_day = Column('all_day', Boolean())
 
+    other_calendars = relationship(
+        "Calendar",
+        secondary=other_calendars_association_table,
+    )
+
     type_info = Content.type_info.copy(
         name=u'Event',
         title=_(u'Event'),
@@ -46,8 +63,18 @@ class Event(Document):
         )
 
     def __init__(self, start=None, end=None, all_day=False,
-                 in_navigation=False, **kwargs):
+                 in_navigation=False, other_calendar_list=(),
+                 other_calendar_id_list=(), **kwargs):
         super(Event, self).__init__(in_navigation=in_navigation, **kwargs)
         self.start = start
         self.end = end
         self.all_day = all_day
+        if other_calendar_list:
+            self.other_calendars = other_calendar_list
+        elif other_calendar_id_list:
+            self.calendars = []
+            for calendar_id in other_calendar_id_list:
+                calendar = Calendar.query.get(calendar_id)
+                self.other_calendars.append(calendar)
+        else:
+            self.other_calendars = []
