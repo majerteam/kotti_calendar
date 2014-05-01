@@ -12,6 +12,9 @@ Kotti itself.
 
 `Find out more about Kotti`_
 
+Forked from Kotti/kotti_calendar to add the possibility of linking one
+Event to several calendars.
+
 Setup
 =====
 
