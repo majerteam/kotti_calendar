@@ -72,7 +72,7 @@ class Event(Document):
         if other_calendar_list:
             self.other_calendars = other_calendar_list
         elif other_calendar_id_list:
-            self.calendars = []
+            self.other_calendars = []
             for calendar_id in other_calendar_id_list:
                 calendar = Calendar.query.get(calendar_id)
                 self.other_calendars.append(calendar)
