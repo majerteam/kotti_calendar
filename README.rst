@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/majerteam/kotti_calendar.svg?branch=travis
+    :target: https://travis-ci.org/majerteam/kotti_calendar
+
 ==============
 kotti_calendar
 ==============
