@@ -1,4 +1,4 @@
-.. image:: https://travis-ci.org/majerteam/kotti_calendar.svg?branch=travis
+.. image:: https://travis-ci.org/majerteam/kotti_calendar.svg?branch=master
     :target: https://travis-ci.org/majerteam/kotti_calendar
 
 ==============
