@@ -13,6 +13,8 @@ Setup and Login
   >>> browser.open(testing.BASE_URL + '/edit')
   >>> "Log in" in browser.contents
   True
+  >>> browser.contents
+  plop
   >>> ctrl("Username or email").value = "admin"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
