@@ -38,10 +38,15 @@ Add events
   >>> browser.getLink("Add").click()
   >>> browser.getLink("Event").click()
 
+  >>> form = browser.getForm(id="deform")
   >>> ctrl("Title").value = "Meet with Frank"
   >>> ctrl("Description").value = "Discuss the latest"
-  >>> ctrl("Start").value = "2010-12-13 12:00:00"
-  >>> ctrl("End").value = "2010-12-13 13:00:00"
+  >>> # Start
+  >>> form.getControl(name="date", index=0).value = "2010-12-13"
+  >>> form.getControl(name="time", index=0).value = "12:00:00"
+  >>> # End
+  >>> form.getControl(name="date", index=1).value = "2010-12-13"
+  >>> form.getControl(name="time", index=1).value = "13:00:00"
   >>> ctrl("save").click()
   >>> "Item was added." in browser.contents
   True

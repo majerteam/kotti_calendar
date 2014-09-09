@@ -4,7 +4,9 @@ from datetime import timedelta
 from pyramid.threadlocal import get_current_registry
 from kotti.testing import FunctionalTestBase
 from kotti.testing import DummyRequest
-
+from kotti.testing import user
+from kotti.testing import BASE_URL
+import pytest
 
 class TestUpcomingEventsWidget(FunctionalTestBase):
     def setUp(self):
@@ -48,9 +50,12 @@ class TestUpcomingEventsWidget(FunctionalTestBase):
         assert events[1].title == u'Event 2'
         assert events[1].start == now + timedelta(1)
 
-    def test_render(self):
-        browser = self.login_testbrowser()
+    @user('admin')
+    @pytest.fixture(autouse=True)
+    def test_render(self, browser):
         ctrl = browser.getControl
+        self.test_view()
+        browser.open(BASE_URL + '/calendar/')
 
         browser.getLink(u'Calendar').click()
         ctrl('Title').value = u'Calendar'
@@ -66,8 +71,9 @@ class TestUpcomingEventsWidget(FunctionalTestBase):
         assert 'This is my Event' in browser.contents
         assert 'Aug 22, 2112 8:00:00 PM' in browser.contents
 
-    def test_settings(self):
-        browser = self.login_testbrowser()
+    @user('admin')
+    @pytest.fixture(autouse=True)
+    def test_settings(self, browser):
         ctrl = browser.getControl
         browser.getLink(u'Calendar').click()
         ctrl('Title').value = u'Calendar'
