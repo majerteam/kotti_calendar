@@ -63,18 +63,38 @@ class Event(Document):
         )
 
     def __init__(self, start=None, end=None, all_day=False,
-                 in_navigation=False, other_calendar_list=(),
-                 other_calendar_id_list=(), **kwargs):
+                 in_navigation=False, other_calendar_list=None,
+                 other_calendar_id_list=None, **kwargs):
         super(Event, self).__init__(in_navigation=in_navigation, **kwargs)
         self.start = start
         self.end = end
         self.all_day = all_day
-        if other_calendar_list:
-            self.other_calendars = other_calendar_list
-        elif other_calendar_id_list:
-            self.other_calendars = []
-            for calendar_id in other_calendar_id_list:
-                calendar = Calendar.query.get(calendar_id)
-                self.other_calendars.append(calendar)
-        else:
-            self.other_calendars = []
+        self.other_calendars = Event._setup_other_calendars(
+            other_calendar_list,
+            other_calendar_id_list
+        )
+
+    @staticmethod
+    def _setup_other_calendars(cal_list, cal_id_list):
+        """
+        Argument parsing method (convenience) for other_calendar_list
+
+        Supplied with either a list of calendars or a list of calendar ids,
+        this method ensures that a list of calendars is returned.
+
+        If all arguments evaluate to False, an empty list is returned.
+
+        :param list cal_list: list of calendars
+        :param list calendar_id: list of calendar ids
+        :returns: list of calendars
+        """
+        if cal_list:
+            return cal_list
+
+        if not cal_id_list:
+            return []
+
+        return [
+            Calendar.query.get(calendar_id)
+            for calendar_id in cal_id_list
+            ]
